@@ -11,12 +11,10 @@
     <groupId>com.cjs.wymall</groupId>
     <artifactId>wymall-admin</artifactId>
     <version>0.0.1-SNAPSHOT</version>
+    <packaging>jar</packaging>
     <name>wymall-admin</name>
-    <description>Demo project for Spring Boot</description>
+    <description>wymall-admin:后台管理系统模块</description>
 
-    <properties>
-        <java.version>1.8</java.version>
-    </properties>
 
     <dependencies>
         <dependency>
