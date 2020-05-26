@@ -20,10 +20,12 @@ public enum StatusCode implements IErrorCode{
         this.message=message;
     }
 
+    @Override
     public long getCode() {
         return code;
     }
 
+    @Override
     public String getMessage() {
         return message;
     }
