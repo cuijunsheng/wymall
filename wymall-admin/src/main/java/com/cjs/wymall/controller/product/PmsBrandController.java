@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -34,6 +35,20 @@ public class PmsBrandController {
         logger.info("获取商品品牌列表");
         List<PmsBrand> pmsBrandList = pmsBrandService.listBrands();
         return CommonResult.success(pmsBrandList);
+    }
+
+    @PostMapping("/createBrand")
+    @ApiOperation(value = "添加品牌")
+    public CommonResult createBrand(PmsBrand pmsBrand){
+        CommonResult commonResult;
+        int count = pmsBrandService.saveBrand(pmsBrand);
+        if(count>0){
+            commonResult = CommonResult.success(count);
+        }else {
+            commonResult = CommonResult.failed("添加失败！");
+        }
+
+        return commonResult;
     }
 
 

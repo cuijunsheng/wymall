@@ -11,5 +11,16 @@ import java.util.List;
  **/
 public interface PmsBrandService {
 
+    /**
+     * 获取商品品牌列表
+     * @return
+     */
     List<PmsBrand> listBrands();
+
+    /**
+     * 添加品牌
+     * @param pmsBrand
+     * @return
+     */
+    int saveBrand(PmsBrand pmsBrand);
 }

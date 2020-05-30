@@ -14,28 +14,19 @@
     <version>0.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>wymall-portal</name>
-    <description>Demo project for Spring Boot</description>
+    <description>wymall-portal:前台用户系统</description>
 
-    <properties>
-        <java.version>1.8</java.version>
-    </properties>
 
     <dependencies>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter</artifactId>
+            <groupId>com.cjs.wymall</groupId>
+            <artifactId>wymall-mbg</artifactId>
         </dependency>
 
+        <!--redis依赖配置-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.junit.vintage</groupId>
-                    <artifactId>junit-vintage-engine</artifactId>
-                </exclusion>
-            </exclusions>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
         </dependency>
     </dependencies>
 

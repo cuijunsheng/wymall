@@ -25,4 +25,10 @@ public class PmsBrandServiceImpl implements PmsBrandService {
 
         return pmsBrandMapper.selectByExample(new PmsBrandExample());
     }
+
+    @Override
+    public int saveBrand(PmsBrand pmsBrand) {
+
+        return pmsBrandMapper.insertSelective(pmsBrand);
+    }
 }
