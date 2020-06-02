@@ -22,7 +22,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/brand")
-@Api(tags = "PmsBrandController",description = "商品品牌")
+@Api(tags = "商品品牌管理")
 public class PmsBrandController {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -39,16 +39,13 @@ public class PmsBrandController {
 
     @PostMapping("/createBrand")
     @ApiOperation(value = "添加品牌")
-    public CommonResult createBrand(PmsBrand pmsBrand){
-        CommonResult commonResult;
+    public CommonResult<Integer> createBrand(PmsBrand pmsBrand){
         int count = pmsBrandService.saveBrand(pmsBrand);
         if(count>0){
-            commonResult = CommonResult.success(count);
+            return CommonResult.success(count);
         }else {
-            commonResult = CommonResult.failed("添加失败！");
+            return CommonResult.failed("添加失败！");
         }
-
-        return commonResult;
     }
 
 

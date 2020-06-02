@@ -13,6 +13,14 @@ mybatis:
    - classpath:dao/*.xml
    - classpath*:com/**/mapper/*.xml
 
+
+#jwt
+jwt:
+  tokenHeader: Authorization #jwt存储的请求头
+  secret: wymall-admin-secret #jwt加密时使用的密钥
+  expiration: 604800 #jwt的超期限时间(60*60*24*7)
+  tokenHead: 'Bearer ' #jwt token的前缀(持票人)
+
 # 打印sql
 logging:
   level:

@@ -30,6 +30,7 @@ public class UmsMemberServiceImpl implements UmsMemberService {
         for (int i = 0; i < 6; i++) {
             sb.append(random.nextInt(10));
         }
+        System.out.println(REDIS_KEY_AUTH_CODE_PREFIX);
         redisService.set(REDIS_KEY_AUTH_CODE_PREFIX+telephone,sb.toString(),REDIS_KEY_AUTH_CODE_EXPIRE_SECONDS);
         return sb.toString();
     }
