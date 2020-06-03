@@ -40,6 +40,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private UmsAdminService adminService;
 
     @Bean
+    @Override
     public UserDetailsService userDetailsService() {
         //获取登录用户信息
         return username -> {
@@ -54,13 +55,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.csrf()//由于使用的是JWT，这里不需要要csrf
+        //由于使用的是JWT，这里不需要要csrf
+        httpSecurity.csrf()
                 .disable()
                 .sessionManagement() //基于token,不需要session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers(HttpMethod.GET, //允许对于网站资源的静态资源无授权访问
+                //允许对于网站资源的静态资源无授权访问
+                .antMatchers(HttpMethod.GET,
                         "/",
                         "/*.html",
                         "favicon.ico",
@@ -70,13 +73,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/swagger-resources/**",
                         "/v2/api-docs/**")
                 .permitAll()
-                .antMatchers("/admin/login", "/admin/register") //对登录注册允许匿名访问
+                //对登录注册允许匿名访问
+                .antMatchers("/admin/login", "/admin/createUser")
                 .permitAll()
-                .antMatchers(HttpMethod.OPTIONS) //跨域请求会先进行一次options请求
+                //跨域请求会先进行一次options请求
+                .antMatchers(HttpMethod.OPTIONS)
                 .permitAll()
-                //.antMatchers("/**") //测试时全部放行
+                //测试时全部放行
+                //.antMatchers("/**")
                 //.permitAll()
-                .anyRequest() //除上面的请求外，其他全部需要鉴权认证
+                //除上面的请求外，其他全部需要鉴权认证
+                .anyRequest()
                 .authenticated();
 
         //禁用缓存
@@ -95,6 +102,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .passwordEncoder(passwordEncoder());
     }
 
+    /**
+     * SpringSecurity定义的用于对密码进行编码及比对的接口
+     * @return PasswordEncoder
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -109,10 +120,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
-    }
-
-    @Bean
-    public JwtTokenUtils jwtTokenUtils(){
-        return new JwtTokenUtils();
     }
 }

@@ -31,10 +31,14 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
     @Autowired
     private JwtTokenUtils jwtTokenUtils;
 
-    //JWT存储的请求头（存放在Http中Header里的Authorization字段）
+    /**
+     * JWT存储的请求头（存放在Http中Header里的Authorization字段）
+     */
     @Value("${jwt.tokenHeader}")
     private String tokenHeader;
-    //token的开头，'Bearer '
+    /**
+     * token的开头，'Bearer '
+     */
     @Value("${jwt.tokenHead}")
     private String tokenHead;
 
@@ -42,9 +46,10 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain chain) throws ServletException, IOException {
-        String authHeader = request.getHeader(tokenHead);
+        String authHeader = request.getHeader(tokenHeader);
         if (authHeader != null && authHeader.startsWith(tokenHead)) {
             String token = authHeader.substring(tokenHead.length());
+            logger.info("登录前从请求头获取的token:{}",token);
             String username = jwtTokenUtils.getUserNameFromToken(token);
             logger.info("checking username:{}", username);
 

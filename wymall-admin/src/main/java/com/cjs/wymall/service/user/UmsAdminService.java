@@ -14,6 +14,7 @@ import java.util.List;
 public interface UmsAdminService {
     /**
      * 后台用户登录
+     *
      * @param username 用户名
      * @param password 密码
      * @return 登录成功后生成jwt的token
@@ -21,21 +22,24 @@ public interface UmsAdminService {
     String login(String username, String password);
 
     /**
-     * 根据用户名获取用户信息
-     * @param username 用户名
-     * @return
-     */
-    UmsAdmin getAdminByUsername(String username);
-
-    /**
      * 根据用户id获取用户权限列表
+     *
      * @param adminId 后台用户id
      * @return
      */
     List<UmsPermission> listPermissions(Long adminId);
 
     /**
+     * 根据用户名获取用户信息(主要是封装用户信息和权限的UserDetails时，查询用户信息)
+     *
+     * @param username 用户名
+     * @return
+     */
+    UmsAdmin getAdminByUsername(String username);
+
+    /**
      * 添加后台用户
+     *
      * @param umsAdminDTO 用户信息
      * @return
      */

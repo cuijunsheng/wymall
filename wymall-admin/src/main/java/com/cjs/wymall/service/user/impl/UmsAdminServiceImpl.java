@@ -48,17 +48,25 @@ public class UmsAdminServiceImpl implements UmsAdminService {
         String token = null;
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
         try {
-            if(!passwordEncoder.matches(password,userDetails.getPassword())){
+            if (!passwordEncoder.matches(password, userDetails.getPassword())) {
                 throw new BadCredentialsException("密码错误！");
             }
+            logger.info("用户权限：{}",userDetails.getAuthorities());
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authentication);
             token = jwtTokenUtils.generateToken(userDetails);
-        }catch (Exception e){
-            logger.error("登录异常：{}",e.getMessage());
+        } catch (Exception e) {
+            logger.error("登录异常：{}", e.getMessage());
         }
         return token;
     }
+
+
+    @Override
+    public List<UmsPermission> listPermissions(Long adminId) {
+        return adminRoleRelationDao.listPermissions(adminId);
+    }
+
 
     @Override
     public UmsAdmin getAdminByUsername(String username) {
@@ -72,14 +80,9 @@ public class UmsAdminServiceImpl implements UmsAdminService {
     }
 
     @Override
-    public List<UmsPermission> listPermissions(Long adminId) {
-        return adminRoleRelationDao.listPermissions(adminId);
-    }
-
-    @Override
     public UmsAdmin save(UmsAdminDTO umsAdminDTO) {
         UmsAdmin umsAdmin = new UmsAdmin();
-        BeanUtils.copyProperties(umsAdminDTO,umsAdmin);
+        BeanUtils.copyProperties(umsAdminDTO, umsAdmin);
         adminMapper.insert(umsAdmin);
         return umsAdmin;
     }

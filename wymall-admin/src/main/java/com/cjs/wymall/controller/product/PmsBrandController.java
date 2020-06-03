@@ -8,6 +8,7 @@ import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,6 +32,7 @@ public class PmsBrandController {
 
     @GetMapping("/queryBrandList")
     @ApiOperation(value = "获取商品品牌列表")
+    @PreAuthorize(value = "hasAuthority('pms:brand:read')")
     public CommonResult<List<PmsBrand>> queryBrandList() {
         logger.info("获取商品品牌列表");
         List<PmsBrand> pmsBrandList = pmsBrandService.listBrands();

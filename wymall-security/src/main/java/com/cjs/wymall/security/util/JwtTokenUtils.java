@@ -25,6 +25,7 @@ import java.util.Map;
  * @author: cuijunsheng
  * @date: 2020/5/30
  */
+@Component
 public class JwtTokenUtils {
     private final Logger logger = LoggerFactory.getLogger(JwtTokenUtils.class);
     private final String CLAIMS_KEY_USERNAME = "sub";
