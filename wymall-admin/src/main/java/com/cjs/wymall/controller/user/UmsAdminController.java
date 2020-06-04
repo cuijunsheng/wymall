@@ -56,6 +56,6 @@ public class UmsAdminController {
         tokenMap.put("token",token);
         tokenMap.put("tokenHead",tokenHead);
 
-        return CommonResult.success(tokenMap);
+        return CommonResult.success("登录成功！",tokenMap);
     }
 }

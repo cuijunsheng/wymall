@@ -3,6 +3,7 @@ package com.cjs.wymall.service.user;
 import com.cjs.wymall.dto.UmsAdminDTO;
 import com.cjs.wymall.model.UmsAdmin;
 import com.cjs.wymall.model.UmsPermission;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.List;
 
@@ -36,6 +37,13 @@ public interface UmsAdminService {
      * @return
      */
     UmsAdmin getAdminByUsername(String username);
+
+    /**
+     * 根据用户名生成带有权限信息的UserDetails
+     * @param username
+     * @return
+     */
+    UserDetails loadUserByUsername(String username);
 
     /**
      * 添加后台用户

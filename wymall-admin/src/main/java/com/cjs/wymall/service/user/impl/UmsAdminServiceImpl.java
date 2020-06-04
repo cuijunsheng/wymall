@@ -1,5 +1,6 @@
 package com.cjs.wymall.service.user.impl;
 
+import com.cjs.wymall.bo.AdminUserDetails;
 import com.cjs.wymall.dao.user.UmsAdminRoleRelationDao;
 import com.cjs.wymall.dto.UmsAdminDTO;
 import com.cjs.wymall.mapper.UmsAdminMapper;
@@ -17,9 +18,11 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -80,9 +83,29 @@ public class UmsAdminServiceImpl implements UmsAdminService {
     }
 
     @Override
+    public UserDetails loadUserByUsername(String username) {
+        UmsAdmin admin = getAdminByUsername(username);
+        if (admin != null) {
+            List<UmsPermission> permissionList = listPermissions(admin.getId());
+
+            return new AdminUserDetails(admin,permissionList);
+        }
+        throw new UsernameNotFoundException("用户名或密码错误");
+    }
+
+    @Override
     public UmsAdmin save(UmsAdminDTO umsAdminDTO) {
         UmsAdmin umsAdmin = new UmsAdmin();
         BeanUtils.copyProperties(umsAdminDTO, umsAdmin);
+        umsAdmin.setCreateTime(new Date());
+        umsAdmin.setStatus(1);
+        //查询是否已经存在同名的用户
+        UmsAdmin localUser = getAdminByUsername(umsAdmin.getUsername());
+        if(localUser!=null){
+            return null;
+        }
+        String encodePassword = passwordEncoder.encode(umsAdmin.getPassword());
+        umsAdmin.setPassword(encodePassword);
         adminMapper.insert(umsAdmin);
         return umsAdmin;
     }

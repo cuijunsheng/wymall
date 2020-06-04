@@ -49,7 +49,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
         String authHeader = request.getHeader(tokenHeader);
         if (authHeader != null && authHeader.startsWith(tokenHead)) {
             String token = authHeader.substring(tokenHead.length());
-            logger.info("登录前从请求头获取的token:{}",token);
+            logger.info("在用户名和密码校验前从请求头获取的token:{}",token);
             String username = jwtTokenUtils.getUserNameFromToken(token);
             logger.info("checking username:{}", username);
 

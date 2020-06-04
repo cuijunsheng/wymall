@@ -11,9 +11,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * @description:
- *  AdminUserDetails :SpringSecurity需要的用户详情
- *  UserDetails: SpringSecurity定义用于封装用户信息的类（主要是用户信息和权限），需要自行实现
+ * @description: AdminUserDetails :SpringSecurity需要的用户详情
+ * UserDetails: SpringSecurity定义用于封装用户信息的类（主要是用户信息和权限），需要自行实现
  * @author: cuijunsheng
  * @date: 2020/5/31
  */
@@ -33,7 +32,7 @@ public class AdminUserDetails implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         //返回当前用户的权限
         return permissionList.stream()
-                .filter(permission -> permission.getValue()!=null)
+                .filter(permission -> permission.getValue() != null)
                 .map(permission -> new SimpleGrantedAuthority(permission.getValue()))
                 .collect(Collectors.toList());
     }
@@ -45,7 +44,7 @@ public class AdminUserDetails implements UserDetails {
 
     @Override
     public String getUsername() {
-        return umsAdmin.getPassword();
+        return umsAdmin.getUsername();
     }
 
     @Override
