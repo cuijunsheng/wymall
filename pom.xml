@@ -49,6 +49,7 @@
         <wymall-common.version>0.0.1-SNAPSHOT</wymall-common.version>
         <wymall-mbg.version>0.0.1-SNAPSHOT</wymall-mbg.version>
         <wymall-security.version>0.0.1-SNAPSHOT</wymall-security.version>
+        <easy-captcha.version>1.6.2</easy-captcha.version>
     </properties>
 
     <!--dependencies里会实际下载jar包，如果没有声明版本号，会去dependencyManagement中去找对应groupId
@@ -89,6 +90,11 @@
             <artifactId>spring-boot-devtools</artifactId>
             <optional>true</optional>
         </dependency>-->
+        <!--commons工具包-->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+        </dependency>
     </dependencies>
 
     <!--dependencyManagement只对依赖的jar版本进行管理，并不会实际去下载jar包，只有子module使用到的时候才会
@@ -196,6 +202,12 @@
                 <groupId>io.minio</groupId>
                 <artifactId>minio</artifactId>
                 <version>${minio.version}</version>
+            </dependency>
+            <!-- Java图形验证码 -->
+            <dependency>
+                <groupId>com.github.whvcse</groupId>
+                <artifactId>easy-captcha</artifactId>
+                <version>${easy-captcha.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

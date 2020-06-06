@@ -1,11 +1,11 @@
 package com.cjs.wymall.portal.service.member.impl;
 
-import com.cjs.wymall.portal.service.RedisService;
+import com.cjs.wymall.common.util.RedisUtils;
 import com.cjs.wymall.portal.service.member.UmsMemberService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import java.util.Random;
 
@@ -20,9 +20,10 @@ public class UmsMemberServiceImpl implements UmsMemberService {
     private String REDIS_KEY_AUTH_CODE_PREFIX;
     @Value("${redis.key.authCode.expire}")
     private Long REDIS_KEY_AUTH_CODE_EXPIRE_SECONDS;
-
     @Autowired
-    private RedisService redisService;
+    private RedisUtils redisUtils;
+
+
     @Override
     public String getAuthCode(String telephone) {
         StringBuilder sb = new StringBuilder();
@@ -31,16 +32,16 @@ public class UmsMemberServiceImpl implements UmsMemberService {
             sb.append(random.nextInt(10));
         }
         System.out.println(REDIS_KEY_AUTH_CODE_PREFIX);
-        redisService.set(REDIS_KEY_AUTH_CODE_PREFIX+telephone,sb.toString(),REDIS_KEY_AUTH_CODE_EXPIRE_SECONDS);
+        redisUtils.set(REDIS_KEY_AUTH_CODE_PREFIX+telephone,sb.toString(),REDIS_KEY_AUTH_CODE_EXPIRE_SECONDS);
         return sb.toString();
     }
 
     @Override
     public Boolean verifyAuthCode(String telephone, String authCode) {
-        if(StringUtils.isEmpty(authCode)){
+        if(StringUtils.isBlank(authCode)){
             return false;
         }
-        String localAuthCode = (String) redisService.get(REDIS_KEY_AUTH_CODE_PREFIX+telephone);
+        String localAuthCode = (String) redisUtils.get(REDIS_KEY_AUTH_CODE_PREFIX+telephone);
         return authCode.equals(localAuthCode);
     }
 }

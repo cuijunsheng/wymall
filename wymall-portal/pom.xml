@@ -21,13 +21,19 @@
         <dependency>
             <groupId>com.cjs.wymall</groupId>
             <artifactId>wymall-mbg</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.cjs.wymall</groupId>
+                    <artifactId>wymall-common</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
-        <!--redis依赖配置-->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-redis</artifactId>
+            <groupId>com.cjs.wymall</groupId>
+            <artifactId>wymall-common</artifactId>
         </dependency>
+
     </dependencies>
 
     <build>

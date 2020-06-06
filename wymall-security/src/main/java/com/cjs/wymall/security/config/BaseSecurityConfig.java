@@ -43,7 +43,7 @@ public class BaseSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/v2/api-docs/**")
                 .permitAll()
                 //对登录注册允许匿名访问
-                .antMatchers("/admin/login", "/admin/createUser")
+                .antMatchers("/admin/login", "/admin/getCaptcha")
                 .permitAll()
                 //跨域请求会先进行一次options请求
                 .antMatchers(HttpMethod.OPTIONS)

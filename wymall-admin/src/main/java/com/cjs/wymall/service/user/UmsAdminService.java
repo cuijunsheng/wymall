@@ -6,6 +6,7 @@ import com.cjs.wymall.model.UmsPermission;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @description:
@@ -15,12 +16,10 @@ import java.util.List;
 public interface UmsAdminService {
     /**
      * 后台用户登录
-     *
-     * @param username 用户名
-     * @param password 密码
+     * @param umsAdminDTO
      * @return 登录成功后生成jwt的token
      */
-    String login(String username, String password);
+    String login(UmsAdminDTO umsAdminDTO);
 
     /**
      * 根据用户id获取用户权限列表
@@ -40,6 +39,7 @@ public interface UmsAdminService {
 
     /**
      * 根据用户名生成带有权限信息的UserDetails
+     *
      * @param username
      * @return
      */
@@ -52,6 +52,13 @@ public interface UmsAdminService {
      * @return
      */
     UmsAdmin save(UmsAdminDTO umsAdminDTO);
+
+    /**
+     * 获取验证码
+     *
+     * @return
+     */
+    Map<String, Object> getCaptcha();
 
 
 }

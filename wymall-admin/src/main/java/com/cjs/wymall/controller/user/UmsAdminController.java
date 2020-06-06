@@ -10,6 +10,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,18 +29,19 @@ import java.util.Map;
 public class UmsAdminController {
     @Autowired
     private UmsAdminService adminService;
+
     @Value("${jwt.tokenHead}")
     private String tokenHead;
 
     @PostMapping("/createUser")
     @ApiOperation(value = "添加后台用户")
-    public CommonResult<UmsAdmin> createUser(UmsAdminVO umsAdminVO){
+    public CommonResult<UmsAdmin> createUser(UmsAdminVO umsAdminVO) {
         UmsAdminDTO umsAdminDTO = new UmsAdminDTO();
-        BeanUtils.copyProperties(umsAdminVO,umsAdminDTO);
+        BeanUtils.copyProperties(umsAdminVO, umsAdminDTO);
         UmsAdmin umsAdmin = adminService.save(umsAdminDTO);
-        if(umsAdmin!=null){
-            return CommonResult.success("添加成功！",umsAdmin);
-        }else {
+        if (umsAdmin != null) {
+            return CommonResult.success("添加成功！", umsAdmin);
+        } else {
             return CommonResult.failed("用户已经存在！");
         }
 
@@ -47,15 +49,24 @@ public class UmsAdminController {
 
     @PostMapping("/login")
     @ApiOperation(value = "后台用户登录")
-    public CommonResult login(String username,String password){
-        String token = adminService.login(username,password);
-        if(token==null){
+    public CommonResult login(UmsAdminVO umsAdminVO) {
+        UmsAdminDTO umsAdminDTO = new UmsAdminDTO();
+        BeanUtils.copyProperties(umsAdminVO,umsAdminDTO);
+        String token = adminService.login (umsAdminDTO);
+        if (token == null) {
             return CommonResult.validateFailed("用户名或密码错误！");
         }
-        Map<String,String> tokenMap = new HashMap<>(16);
-        tokenMap.put("token",token);
-        tokenMap.put("tokenHead",tokenHead);
+        Map<String, String> tokenMap = new HashMap<>(4);
+        tokenMap.put("token", token);
+        tokenMap.put("tokenHead", tokenHead);
 
-        return CommonResult.success("登录成功！",tokenMap);
+        return CommonResult.success("登录成功", tokenMap);
+    }
+
+    @GetMapping("/getCaptcha")
+    @ApiOperation(value = "获取验证码")
+    public CommonResult getCaptcha() {
+        Map<String, Object> captchaResult = adminService.getCaptcha();
+        return CommonResult.success("获取验证码成功！",captchaResult);
     }
 }

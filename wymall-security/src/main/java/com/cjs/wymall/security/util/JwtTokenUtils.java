@@ -27,9 +27,9 @@ import java.util.Map;
  */
 @Component
 public class JwtTokenUtils {
-    private final Logger logger = LoggerFactory.getLogger(JwtTokenUtils.class);
-    private final String CLAIMS_KEY_USERNAME = "sub";
-    private final String CLAIMS_KEY_CREATED = "created";
+    private static final Logger logger = LoggerFactory.getLogger(JwtTokenUtils.class);
+    private static final String CLAIMS_KEY_USERNAME = "sub";
+    private static final String CLAIMS_KEY_CREATED = "created";
 
     @Value("${jwt.secret}")
     private String secret;

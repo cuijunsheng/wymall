@@ -20,6 +20,12 @@
         <dependency>
             <groupId>com.cjs.wymall</groupId>
             <artifactId>wymall-mbg</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.cjs.wymall</groupId>
+                    <artifactId>wymall-common</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
@@ -41,7 +47,11 @@
             <groupId>io.minio</groupId>
             <artifactId>minio</artifactId>
         </dependency>
-
+        <!--java图形验证码-->
+        <dependency>
+            <groupId>com.github.whvcse</groupId>
+            <artifactId>easy-captcha</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
