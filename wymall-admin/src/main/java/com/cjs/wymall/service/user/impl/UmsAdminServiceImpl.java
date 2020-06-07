@@ -61,8 +61,10 @@ public class UmsAdminServiceImpl implements UmsAdminService {
 
     @Override
     public String login(UmsAdminDTO umsAdminDTO) {
+        logger.info("umsAdminDTO:{}",umsAdminDTO);
         //获取验证码
         String captcha = (String) redisUtils.get(umsAdminDTO.getCaptchaKey());
+        logger.info("验证码：{}",captcha);
         //清除验证码
         redisUtils.del(umsAdminDTO.getCaptchaKey());
         if(StringUtils.isBlank(captcha)){

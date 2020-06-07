@@ -7,13 +7,12 @@ import com.cjs.wymall.service.user.UmsAdminService;
 import com.cjs.wymall.vo.UmsAdminVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,6 +26,7 @@ import java.util.Map;
 @RequestMapping("/admin")
 @Api(tags = "后台用户管理")
 public class UmsAdminController {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     @Autowired
     private UmsAdminService adminService;
 
@@ -49,7 +49,8 @@ public class UmsAdminController {
 
     @PostMapping("/login")
     @ApiOperation(value = "后台用户登录")
-    public CommonResult login(UmsAdminVO umsAdminVO) {
+    public CommonResult login(@RequestBody UmsAdminVO umsAdminVO) {
+        logger.info("UmsAdminVO：{}",umsAdminVO);
         UmsAdminDTO umsAdminDTO = new UmsAdminDTO();
         BeanUtils.copyProperties(umsAdminVO,umsAdminDTO);
         String token = adminService.login (umsAdminDTO);
