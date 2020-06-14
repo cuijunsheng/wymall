@@ -46,4 +46,25 @@ redis:
       prefix: "admin-login-"
       expire: 120
 
+#自定义访问url白名单
+secure:
+  ignored:
+    urls: #安全路径白名单
+      - /swagger-ui.html
+      - /swagger-resources/**
+      - /swagger/**
+      - /**/v2/api-docs
+      - /**/*.js
+      - /**/*.css
+      - /**/*.png
+      - /**/*.ico
+      - /webjars/springfox-swagger-ui/**
+      - /druid/**
+      - /actuator/**
+      - /sso/**
+      - /home/**
+      - /admin/login
+      - /admin/getCaptcha
+      - /admin/info
+      - /admin/logout
 

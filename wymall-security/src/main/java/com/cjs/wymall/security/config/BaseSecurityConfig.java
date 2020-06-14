@@ -3,12 +3,14 @@ package com.cjs.wymall.security.config;
 import com.cjs.wymall.security.component.JwtAuthenticationTokenFilter;
 import com.cjs.wymall.security.component.RestAuthenticationEntryPoint;
 import com.cjs.wymall.security.component.RestfulAccessDeniedHandler;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.configurers.ExpressionUrlAuthorizationConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,48 +23,50 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
  * @date: 2020-06-04 11:01
  **/
 public class BaseSecurityConfig extends WebSecurityConfigurerAdapter {
+    @Autowired
+    private IgnoreUrlsConfig ignoreUrlsConfig;
+    @Autowired
+    private RestAuthenticationEntryPoint restAuthenticationEntryPoint;
+    @Autowired
+    private RestfulAccessDeniedHandler restfulAccessDeniedHandler;
 
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
-        //由于使用的是JWT，这里不需要要csrf
-        httpSecurity.csrf()
-                .disable()
-                .sessionManagement() //基于token,不需要session
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .authorizeRequests()
-                //允许对于网站资源的静态资源无授权访问
-                .antMatchers(HttpMethod.GET,
-                        "/",
-                        "/*.html",
-                        "favicon.ico",
-                        "/**/*.html",
-                        "/**/*.css",
-                        "/**/*.js",
-                        "/swagger-resources/**",
-                        "/v2/api-docs/**")
-                .permitAll()
-                //对登录注册允许匿名访问
-                .antMatchers("/admin/login", "/admin/getCaptcha")
-                .permitAll()
-                //跨域请求会先进行一次options请求
-                .antMatchers(HttpMethod.OPTIONS)
-                .permitAll()
-                //测试时全部放行
-                //.antMatchers("/**")
-                //.permitAll()
-                //除上面的请求外，其他全部需要鉴权认证
-                .anyRequest()
-                .authenticated();
+        ExpressionUrlAuthorizationConfigurer<HttpSecurity>.ExpressionInterceptUrlRegistry registry = httpSecurity.authorizeRequests();
+        // 不需要保护的资源路径可以自由访问
+        for (String url : ignoreUrlsConfig.getUrls()
+        ) {
+            registry.antMatchers(url).permitAll();
+        }
 
-        //禁用缓存
-        httpSecurity.headers().cacheControl();
-        // 添加JWT filter
-        httpSecurity.addFilterBefore(jwtAuthenticationTokenFilter(), UsernamePasswordAuthenticationFilter.class);
-        //添加自定义未授权和未登录结果返回
-        httpSecurity.exceptionHandling()
-                .accessDeniedHandler(new RestfulAccessDeniedHandler())
-                .authenticationEntryPoint(new RestAuthenticationEntryPoint());
+        /*
+         *  放行cors之前的options请求(预检请求) 当发起跨域请求时，由于安全原因，触发一定条件时
+         *浏览器会在正式请求之前自动先发起OPTIONS请求，即CORS预检请求，服务器若接受该跨域请求，
+         *浏览器才继续发起正式请求
+         */
+        registry.antMatchers(HttpMethod.OPTIONS)
+                .permitAll();
+
+        //其他任何请求都需要认证
+        registry.and()
+                .authorizeRequests()
+                .anyRequest()
+                .authenticated()
+                //关闭跨站请求防护
+                .and()
+                .csrf()
+                .disable()
+                //基于token,不需要session
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                //添加自定义未授权和未登录结果处理类
+                .and()
+                .exceptionHandling()
+                .authenticationEntryPoint(restAuthenticationEntryPoint)
+                .accessDeniedHandler(restfulAccessDeniedHandler)
+                //添加自定义jwt权限过滤器，用户名和密码校验前，如果请求中有jwt的token且有效，调用SpringSecurity的API登录操作
+                .and()
+                .addFilterBefore(jwtAuthenticationTokenFilter(),UsernamePasswordAuthenticationFilter.class);
     }
 
     @Override
@@ -88,7 +92,7 @@ public class BaseSecurityConfig extends WebSecurityConfigurerAdapter {
      * @return
      */
     @Bean
-    public JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter() {
+    public JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter(){
         return new JwtAuthenticationTokenFilter();
     }
 

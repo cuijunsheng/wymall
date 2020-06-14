@@ -1,9 +1,11 @@
-package com.cjs.wymall.controller.user;
+package com.cjs.wymall.controller;
 
 import com.cjs.wymall.common.web.CommonResult;
 import com.cjs.wymall.dto.UmsAdminDTO;
 import com.cjs.wymall.model.UmsAdmin;
-import com.cjs.wymall.service.user.UmsAdminService;
+import com.cjs.wymall.service.UmsAdminService;
+import com.cjs.wymall.service.UmsMenuService;
+import com.cjs.wymall.service.UmsRoleService;
 import com.cjs.wymall.vo.UmsAdminVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -14,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,6 +32,10 @@ public class UmsAdminController {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     @Autowired
     private UmsAdminService adminService;
+    @Autowired
+    private UmsRoleService roleService;
+    @Autowired
+    private UmsMenuService menuService;
 
     @Value("${jwt.tokenHead}")
     private String tokenHead;
@@ -69,5 +76,30 @@ public class UmsAdminController {
     public CommonResult getCaptcha() {
         Map<String, Object> captchaResult = adminService.getCaptcha();
         return CommonResult.success("获取验证码成功！",captchaResult);
+    }
+
+    @PostMapping("/logout")
+    @ApiOperation(value = "退出登录")
+    public CommonResult logout(){
+
+        return CommonResult.success("退出成功！",null);
+    }
+
+    @GetMapping("/info")
+    @ApiOperation(value = "登录后获取管理员信息")
+    public CommonResult getAdminInfo(Principal principal){
+        logger.info("principal信息：{}",principal);
+        if(principal==null){
+            return CommonResult.unauthorized();
+        }
+        String username = principal.getName();
+        UmsAdmin umsAdmin = adminService.getAdminByUsername(username);
+        Map<String,Object> data = new HashMap<>();
+        data.put("username",username);
+        data.put("roles", new String[]{"TEST"});
+        data.put("menus", menuService.listMenusByAdminId(umsAdmin.getId()));
+        data.put("icon", umsAdmin.getIcon());
+        return CommonResult.success(data);
+
     }
 }

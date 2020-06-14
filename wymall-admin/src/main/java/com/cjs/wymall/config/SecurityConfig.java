@@ -1,13 +1,21 @@
 package com.cjs.wymall.config;
 
+import com.cjs.wymall.model.UmsResource;
+import com.cjs.wymall.security.component.DynamicSecurityService;
 import com.cjs.wymall.security.config.BaseSecurityConfig;
-import com.cjs.wymall.service.user.UmsAdminService;
+import com.cjs.wymall.service.UmsAdminService;
+import com.cjs.wymall.service.UmsResourceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
+
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 /**
@@ -21,6 +29,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 public class SecurityConfig extends BaseSecurityConfig {
     @Autowired
     private UmsAdminService adminService;
+    @Autowired
+    private UmsResourceService resourceService;
 
     @Bean
     @Override
@@ -30,4 +40,15 @@ public class SecurityConfig extends BaseSecurityConfig {
     }
 
 
+    @Bean
+    public DynamicSecurityService dynamicSecurityService() {
+        return () -> {
+            Map<String, ConfigAttribute> map = new ConcurrentHashMap<>();
+            List<UmsResource> resourceList = resourceService.listResources();
+            for (UmsResource resource : resourceList) {
+                map.put(resource.getUrl(), new org.springframework.security.access.SecurityConfig(resource.getId() + ":" + resource.getName()));
+            }
+            return map;
+        };
+    }
 }

@@ -1,4 +1,4 @@
-package com.cjs.wymall.service.product;
+package com.cjs.wymall.service;
 
 import com.cjs.wymall.model.PmsBrand;
 

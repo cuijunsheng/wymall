@@ -1,17 +1,17 @@
-package com.cjs.wymall.service.user.impl;
+package com.cjs.wymall.service.impl;
 
 import cn.hutool.core.util.IdUtil;
 import com.cjs.wymall.bo.AdminUserDetails;
 import com.cjs.wymall.common.exception.ApiException;
 import com.cjs.wymall.common.util.RedisUtils;
-import com.cjs.wymall.dao.user.UmsAdminRoleRelationDao;
+import com.cjs.wymall.dao.UmsPermissionDao;
 import com.cjs.wymall.dto.UmsAdminDTO;
 import com.cjs.wymall.mapper.UmsAdminMapper;
 import com.cjs.wymall.model.UmsAdmin;
 import com.cjs.wymall.model.UmsAdminExample;
 import com.cjs.wymall.model.UmsPermission;
 import com.cjs.wymall.security.util.JwtTokenUtils;
-import com.cjs.wymall.service.user.UmsAdminService;
+import com.cjs.wymall.service.UmsAdminService;
 import com.wf.captcha.ArithmeticCaptcha;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -52,7 +52,7 @@ public class UmsAdminServiceImpl implements UmsAdminService {
     @Autowired
     private UmsAdminMapper adminMapper;
     @Autowired
-    private UmsAdminRoleRelationDao adminRoleRelationDao;
+    private UmsPermissionDao umsPermissionDao;
     @Autowired
     private UserDetailsService userDetailsService;
 
@@ -61,22 +61,22 @@ public class UmsAdminServiceImpl implements UmsAdminService {
 
     @Override
     public String login(UmsAdminDTO umsAdminDTO) {
-        logger.info("umsAdminDTO:{}",umsAdminDTO);
+        logger.info("umsAdminDTO:{}", umsAdminDTO);
         //获取验证码
         String captcha = (String) redisUtils.get(umsAdminDTO.getCaptchaKey());
-        logger.info("验证码：{}",captcha);
+        logger.info("验证码：{}", captcha);
         //清除验证码
         redisUtils.del(umsAdminDTO.getCaptchaKey());
-        if(StringUtils.isBlank(captcha)){
+        if (StringUtils.isBlank(captcha)) {
             throw new ApiException("验证码不存在或已过期！");
         }
-        if(!captcha.equalsIgnoreCase(umsAdminDTO.getCaptcha())){
+        if (!captcha.equalsIgnoreCase(umsAdminDTO.getCaptcha())) {
             throw new ApiException("验证码错误！");
         }
 
         String token = null;
         UserDetails userDetails = userDetailsService.loadUserByUsername(umsAdminDTO.getUsername());
-        logger.info("用户权限：{}",userDetails.getAuthorities());
+        logger.info("用户权限：{}", userDetails.getAuthorities());
         try {
             if (!passwordEncoder.matches(umsAdminDTO.getPassword(), userDetails.getPassword())) {
                 throw new BadCredentialsException("密码错误！");
@@ -93,7 +93,7 @@ public class UmsAdminServiceImpl implements UmsAdminService {
 
     @Override
     public List<UmsPermission> listPermissions(Long adminId) {
-        return adminRoleRelationDao.listPermissions(adminId);
+        return umsPermissionDao.listPermissionsByAdminId(adminId);
     }
 
 
@@ -114,7 +114,7 @@ public class UmsAdminServiceImpl implements UmsAdminService {
         if (admin != null) {
             List<UmsPermission> permissionList = listPermissions(admin.getId());
 
-            return new AdminUserDetails(admin,permissionList);
+            return new AdminUserDetails(admin, permissionList);
         }
         throw new UsernameNotFoundException("用户名或密码错误");
     }
@@ -127,7 +127,7 @@ public class UmsAdminServiceImpl implements UmsAdminService {
         umsAdmin.setStatus(1);
         //查询是否已经存在同名的用户
         UmsAdmin localUser = getAdminByUsername(umsAdmin.getUsername());
-        if(localUser!=null){
+        if (localUser != null) {
             return null;
         }
         String encodePassword = passwordEncoder.encode(umsAdmin.getPassword());
@@ -144,7 +144,7 @@ public class UmsAdminServiceImpl implements UmsAdminService {
         captcha.setLen(2);
         // 获取运算的结果
         String result = captcha.text();
-        String captchaKey = captchaPrefix+IdUtil.simpleUUID();
+        String captchaKey = captchaPrefix + IdUtil.simpleUUID();
         // 保存
         redisUtils.set(captchaKey, result, 2, TimeUnit.MINUTES);
         // 验证码信息

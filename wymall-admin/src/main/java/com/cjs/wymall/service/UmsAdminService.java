@@ -1,4 +1,4 @@
-package com.cjs.wymall.service.user;
+package com.cjs.wymall.service;
 
 import com.cjs.wymall.dto.UmsAdminDTO;
 import com.cjs.wymall.model.UmsAdmin;

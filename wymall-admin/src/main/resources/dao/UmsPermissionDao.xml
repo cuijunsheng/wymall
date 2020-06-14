@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.cjs.wymall.dao.user.UmsAdminRoleRelationDao">
-    <select id="listPermissions" resultMap="com.cjs.wymall.mapper.UmsPermissionMapper.BaseResultMap">
+<mapper namespace="com.cjs.wymall.dao.UmsPermissionDao">
+    <select id="listPermissionsByAdminId" resultMap="com.cjs.wymall.mapper.UmsPermissionMapper.BaseResultMap">
         SELECT
         p.*
         FROM

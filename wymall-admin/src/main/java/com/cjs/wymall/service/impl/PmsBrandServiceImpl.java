@@ -1,9 +1,9 @@
-package com.cjs.wymall.service.product.impl;
+package com.cjs.wymall.service.impl;
 
 import com.cjs.wymall.mapper.PmsBrandMapper;
 import com.cjs.wymall.model.PmsBrand;
 import com.cjs.wymall.model.PmsBrandExample;
-import com.cjs.wymall.service.product.PmsBrandService;
+import com.cjs.wymall.service.PmsBrandService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
