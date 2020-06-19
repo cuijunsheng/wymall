@@ -6,6 +6,7 @@ import com.cjs.wymall.model.UmsAdmin;
 import com.cjs.wymall.service.UmsAdminService;
 import com.cjs.wymall.service.UmsMenuService;
 import com.cjs.wymall.service.UmsRoleService;
+import com.cjs.wymall.vo.UmsAdminLoginVO;
 import com.cjs.wymall.vo.UmsAdminVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -56,10 +57,10 @@ public class UmsAdminController {
 
     @PostMapping("/login")
     @ApiOperation(value = "后台用户登录")
-    public CommonResult login(@RequestBody UmsAdminVO umsAdminVO) {
-        logger.info("UmsAdminVO：{}",umsAdminVO);
+    public CommonResult login(@RequestBody UmsAdminLoginVO umsAdminLoginVO) {
+        logger.info("umsAdminLoginVO：{}",umsAdminLoginVO);
         UmsAdminDTO umsAdminDTO = new UmsAdminDTO();
-        BeanUtils.copyProperties(umsAdminVO,umsAdminDTO);
+        BeanUtils.copyProperties(umsAdminLoginVO,umsAdminDTO);
         String token = adminService.login (umsAdminDTO);
         if (token == null) {
             return CommonResult.validateFailed("用户名或密码错误！");

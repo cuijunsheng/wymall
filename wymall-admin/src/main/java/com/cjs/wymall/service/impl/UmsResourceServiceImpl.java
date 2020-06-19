@@ -1,5 +1,6 @@
 package com.cjs.wymall.service.impl;
 
+import com.cjs.wymall.dao.UmsResourceDao;
 import com.cjs.wymall.mapper.UmsResourceMapper;
 import com.cjs.wymall.model.UmsResource;
 import com.cjs.wymall.model.UmsResourceExample;
@@ -18,9 +19,16 @@ import java.util.List;
 public class UmsResourceServiceImpl implements UmsResourceService {
     @Autowired
     private UmsResourceMapper resourceMapper;
+    @Autowired
+    private UmsResourceDao resourceDao;
 
     @Override
     public List<UmsResource> listResources() {
         return resourceMapper.selectByExample(new UmsResourceExample());
+    }
+
+    @Override
+    public List<UmsResource> listResourcesByAdminId(Long adminId) {
+        return resourceDao.listResourcesByAdminId(adminId);
     }
 }

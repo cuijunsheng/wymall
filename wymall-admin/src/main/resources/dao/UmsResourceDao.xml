@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cjs.wymall.dao.UmsResourceDao">
+    <select id="listResourcesByAdminId" resultMap="com.cjs.wymall.mapper.UmsResourceMapper.BaseResultMap">
+        SELECT
+        r2.*
+        FROM ums_admin_role_relation ar
+        LEFT JOIN ums_role r1 on ar.role_id = r1.id
+        LEFT JOIN ums_role_resource_relation rr ON r1.id = rr.role_id
+        LEFT JOIN ums_resource r2 ON rr.resource_id = r2.id
+        WHERE
+        ar.admin_id = #{adminId}
+        AND r2.id IS NOT NULL
+    </select>
+
+</mapper>

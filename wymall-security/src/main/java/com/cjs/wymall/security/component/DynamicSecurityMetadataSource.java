@@ -1,6 +1,8 @@
 package com.cjs.wymall.security.component;
 
 import cn.hutool.core.util.URLUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.web.FilterInvocation;
@@ -22,6 +24,7 @@ import java.util.Map;
  */
 @Component
 public class DynamicSecurityMetadataSource implements FilterInvocationSecurityMetadataSource {
+    private static final Logger logger = LoggerFactory.getLogger(DynamicSecurityMetadataSource.class);
     private static Map<String, ConfigAttribute> configAttributeMap = null;
     @Autowired
     private DynamicSecurityService dynamicSecurityService;
@@ -46,7 +49,7 @@ public class DynamicSecurityMetadataSource implements FilterInvocationSecurityMe
         String url = ((FilterInvocation) object).getRequestUrl();
         String path = URLUtil.getPath(url);
         PathMatcher pathMatcher = new AntPathMatcher();
-        //获取访问该路径所需要的资源
+        //获取访问该路径所需要的资源（将所有资源的key也就是url与当前访问路径url匹配，匹配到就拥有该资源的访问权限）
         for (String pattern : configAttributeMap.keySet()) {
             if (pathMatcher.match(pattern, path)) {
                 configAttributes.add(configAttributeMap.get(pattern));

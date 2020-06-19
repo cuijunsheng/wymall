@@ -16,4 +16,11 @@ public interface UmsResourceService {
      * @return
      */
     List<UmsResource> listResources();
+
+    /**
+     * 根据后台用户id获取可访问的资源
+     * @param adminId 后台用户id
+     * @return
+     */
+    List<UmsResource> listResourcesByAdminId(Long adminId);
 }

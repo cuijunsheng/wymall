@@ -1,7 +1,7 @@
 package com.cjs.wymall.bo;
 
 import com.cjs.wymall.model.UmsAdmin;
-import com.cjs.wymall.model.UmsPermission;
+import com.cjs.wymall.model.UmsResource;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,22 +18,21 @@ import java.util.stream.Collectors;
  */
 public class AdminUserDetails implements UserDetails {
     private UmsAdmin umsAdmin;
-    private List<UmsPermission> permissionList;
+    private List<UmsResource> resourceList;
 
     public AdminUserDetails() {
     }
 
-    public AdminUserDetails(UmsAdmin umsAdmin, List<UmsPermission> permissionList) {
+    public AdminUserDetails(UmsAdmin umsAdmin, List<UmsResource> resourceList) {
         this.umsAdmin = umsAdmin;
-        this.permissionList = permissionList;
+        this.resourceList = resourceList;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        //返回当前用户的权限
-        return permissionList.stream()
-                .filter(permission -> permission.getValue() != null)
-                .map(permission -> new SimpleGrantedAuthority(permission.getValue()))
+        //返回当前用户的角色(当前用户可以访问的资源)
+        return resourceList.stream()
+                .map(resource -> new SimpleGrantedAuthority(resource.getId() + ":" + resource.getName()))
                 .collect(Collectors.toList());
     }
 

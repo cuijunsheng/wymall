@@ -12,7 +12,7 @@ import javax.validation.constraints.NotEmpty;
  * @date: 2020/6/1
  */
 @Data
-public class UmsAdminVO {
+public class UmsAdminLoginVO {
     @ApiModelProperty(value = "用户名", required = true)
     @NotEmpty(message = "用户名不能为空")
     private String username;
@@ -28,4 +28,10 @@ public class UmsAdminVO {
     private String nickName;
     @ApiModelProperty(value = "备注")
     private String note;
+    @ApiModelProperty(value = "验证码key", required = true)
+    @NotEmpty(message = "验证码key不能为空")
+    private String captchaKey;
+    @ApiModelProperty(value = "验证码", required = true)
+    @NotEmpty(message = "验证码不能为空")
+    private String captcha;
 }

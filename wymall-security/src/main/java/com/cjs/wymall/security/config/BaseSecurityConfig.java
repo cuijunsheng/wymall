@@ -1,8 +1,6 @@
 package com.cjs.wymall.security.config;
 
-import com.cjs.wymall.security.component.JwtAuthenticationTokenFilter;
-import com.cjs.wymall.security.component.RestAuthenticationEntryPoint;
-import com.cjs.wymall.security.component.RestfulAccessDeniedHandler;
+import com.cjs.wymall.security.component.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
@@ -14,6 +12,7 @@ import org.springframework.security.config.annotation.web.configurers.Expression
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 /**
@@ -29,6 +28,10 @@ public class BaseSecurityConfig extends WebSecurityConfigurerAdapter {
     private RestAuthenticationEntryPoint restAuthenticationEntryPoint;
     @Autowired
     private RestfulAccessDeniedHandler restfulAccessDeniedHandler;
+    /*@Autowired
+    private DynamicSecurityFilter dynamicSecurityFilter;*/
+    @Autowired(required = false)
+    private DynamicSecurityService dynamicSecurityService;
 
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
@@ -66,7 +69,11 @@ public class BaseSecurityConfig extends WebSecurityConfigurerAdapter {
                 .accessDeniedHandler(restfulAccessDeniedHandler)
                 //添加自定义jwt权限过滤器，用户名和密码校验前，如果请求中有jwt的token且有效，调用SpringSecurity的API登录操作
                 .and()
-                .addFilterBefore(jwtAuthenticationTokenFilter(),UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtAuthenticationTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+        //有动态权限配置时添加动态权限校验过滤器
+        if (dynamicSecurityService != null) {
+            registry.and().addFilterBefore(dynamicSecurityFilter(), FilterSecurityInterceptor.class);
+        }
     }
 
     @Override
@@ -92,8 +99,13 @@ public class BaseSecurityConfig extends WebSecurityConfigurerAdapter {
      * @return
      */
     @Bean
-    public JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter(){
+    public JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter() {
         return new JwtAuthenticationTokenFilter();
+    }
+
+    @Bean
+    public DynamicSecurityFilter dynamicSecurityFilter(){
+        return new DynamicSecurityFilter();
     }
 
     @Bean

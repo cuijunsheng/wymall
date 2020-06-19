@@ -10,8 +10,10 @@ import com.cjs.wymall.mapper.UmsAdminMapper;
 import com.cjs.wymall.model.UmsAdmin;
 import com.cjs.wymall.model.UmsAdminExample;
 import com.cjs.wymall.model.UmsPermission;
+import com.cjs.wymall.model.UmsResource;
 import com.cjs.wymall.security.util.JwtTokenUtils;
 import com.cjs.wymall.service.UmsAdminService;
+import com.cjs.wymall.service.UmsResourceService;
 import com.wf.captcha.ArithmeticCaptcha;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -53,6 +55,8 @@ public class UmsAdminServiceImpl implements UmsAdminService {
     private UmsAdminMapper adminMapper;
     @Autowired
     private UmsPermissionDao umsPermissionDao;
+    @Autowired
+    private UmsResourceService resourceService;
     @Autowired
     private UserDetailsService userDetailsService;
 
@@ -112,9 +116,9 @@ public class UmsAdminServiceImpl implements UmsAdminService {
     public UserDetails loadUserByUsername(String username) {
         UmsAdmin admin = getAdminByUsername(username);
         if (admin != null) {
-            List<UmsPermission> permissionList = listPermissions(admin.getId());
+            List<UmsResource> resourceList = resourceService.listResourcesByAdminId(admin.getId());
 
-            return new AdminUserDetails(admin, permissionList);
+            return new AdminUserDetails(admin, resourceList);
         }
         throw new UsernameNotFoundException("用户名或密码错误");
     }

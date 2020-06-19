@@ -18,5 +18,8 @@ import java.util.List;
 @ConfigurationProperties(prefix = "secure.ignored")
 public class IgnoreUrlsConfig {
 
+    /**
+     * 请求白名单url
+     */
     private List<String> urls;
 }
