@@ -1,7 +1,7 @@
 package com.cjs.wymall.service.impl;
 
 import cn.hutool.core.util.IdUtil;
-import com.cjs.wymall.bo.AdminUserDetails;
+import com.cjs.wymall.model.bo.AdminUserDetails;
 import com.cjs.wymall.common.exception.ApiException;
 import com.cjs.wymall.common.util.RedisUtils;
 import com.cjs.wymall.dao.UmsPermissionDao;

@@ -75,6 +75,10 @@ public class CommonPage<T> {
         this.total = total;
     }
 
+    public Long getTotal() {
+        return total;
+    }
+
     public List<T> getList() {
         return list;
     }

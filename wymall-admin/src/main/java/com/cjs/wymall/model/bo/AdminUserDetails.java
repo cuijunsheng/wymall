@@ -1,4 +1,4 @@
-package com.cjs.wymall.bo;
+package com.cjs.wymall.model.bo;
 
 import com.cjs.wymall.model.UmsAdmin;
 import com.cjs.wymall.model.UmsResource;
