@@ -1,5 +1,6 @@
 package com.cjs.wymall.service;
 
+import com.cjs.wymall.dto.PmsBrandDTO;
 import com.cjs.wymall.model.PmsBrand;
 
 import java.util.List;
@@ -28,10 +29,10 @@ public interface PmsBrandService {
 
     /**
      * 添加品牌
-     * @param pmsBrand
+     * @param pmsBrandDTO
      * @return
      */
-    int saveBrand(PmsBrand pmsBrand);
+    int saveBrand(PmsBrandDTO pmsBrandDTO);
 
     /**
      * 修改是否为品牌厂商
@@ -48,4 +49,26 @@ public interface PmsBrandService {
      * @return
      */
     int updateShowStatus(List<Long> ids,Integer showStatus);
+
+    /**
+     * 根据id查询品牌信息
+     * @param id
+     * @return
+     */
+    PmsBrand getBrandById(Long id);
+
+    /**
+     * 修改品牌信息
+     * @param id
+     * @param pmsBrandDTO
+     * @return
+     */
+    int updateBrand(Long id,PmsBrandDTO pmsBrandDTO);
+
+    /**
+     * 删除品牌信息
+     * @param id
+     * @return
+     */
+    int deleteBrandById(Long id);
 }
